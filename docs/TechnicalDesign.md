@@ -279,7 +279,7 @@ classDiagram
 |---|---|---|
 | `DetectionDistanceCondition` | 대상이 감지 반경 안/밖 | `DetectionConfigSO.DistanceRadius` |
 | `AttackDistanceCondition` | 대상이 공격 범위 안/밖 | `AttackConfigSO.AttackRange` |
-| `ReturnDistanceCondition` | 스폰 지점 도달 반경 | `DetectionConfigSO.ReturnArrivalRadius` |
+| `ReturnDistanceCondition` | 몬스터가 스폰 위치 도달 반경 안 (기준점이 플레이어가 아닌 스폰 위치) | `DetectionConfigSO.ReturnArrivalRadius` |
 | `EscapeDistanceCondition` | 도주 종료 거리 | `EscapeDetectionConfigSO.EscapeEndDistance` |
 | `DetectionSightCondition` | 부채꼴 시야(반경 + 각도) 안에 대상 | `DetectionConfigSO.ViewRadius / ViewAngle` |
 | `LostSightTimeCondition` | 시야는 잃었지만 거리 안에 있는 상태가 N초 지속 | `DetectionConfigSO.ActionHoldTime` |
@@ -326,6 +326,18 @@ public class AttackDistanceCondition : BaseDistanceCondition
 }
 ```
 
+**4) 기준점이 다른 거리 조건**
+
+거리 조건은 기본적으로 플레이어까지의 거리를 재지만, 복귀 도착 판정은 스폰 위치가 기준이어야 합니다. `ReturnDistanceCondition`은 초기화 시점 위치를 저장하고 판정만 재정의합니다. 반경과 진입/이탈 모드는 기반 클래스 것을 그대로 씁니다.
+
+```csharp
+public override bool IsConditionMet(Transform owner, FsmData fsmData, float stateEnterTime)
+{
+    float dist = Vector3.Distance(fsmData.BaseFsm.transform.position, _spawnPos);
+    return ExitIfNear ? (dist <= _distanceRadius) : (dist >= _distanceRadius);
+}
+```
+
 ### 5.4 시각화
 
 거리 조건은 원(진입 = 빨강 / 이탈 = 파랑), 시야 조건은 부채꼴과 `시야 75° / 10m` 라벨을 Scene 뷰에 그립니다.
@@ -344,7 +356,7 @@ public class AttackDistanceCondition : BaseDistanceCondition
 | `AlertState` | 대상 방향으로 경계 회전 속도(`AlertRotationSpeed`)로 조준 |
 | `ChaseState` | 대상 위치까지 A\* 경로 이동 |
 | `EscapeState` | 대상 반대 방향 5m 지점까지 경로 이동 |
-| `ReturnState` | 초기화 시점 위치(스폰 지점)로 복귀 |
+| `ReturnState` | 초기화 시점 위치(스폰 지점)로 복귀. 도착하면 `[도착]` 규칙으로 대기 상태 전환 |
 | `WanderState` | 진입 위치 기준 반경 안 랜덤 지점을 순회, 도착 후 랜덤 대기 |
 | `AttackState` | 준비 시간 → 범위 판정 후 피해 → 쿨타임 반복 |
 | `EventState` | Enter/Update/Exit마다 UnityEvent 호출 (연출용) |
@@ -456,6 +468,7 @@ stateDiagram-v2
     Wander --> Alert : 시야 미감지 / N초 유예
     Wander --> Return : 거리 미감지 / N초 유예
     Return --> Idle : 경계 전환 / 거리 진입
+    Return --> Idle : 도착 / 스폰 위치 도달
 ```
 
 ### 7.2 도주형 (EscapeMonster)
@@ -470,6 +483,7 @@ stateDiagram-v2
     Escape --> Alert : 시야 미감지
     Escape --> Return : 거리 미감지
     Return --> Idle : 경계 전환
+    Return --> Idle : 도착
 ```
 
 ### 7.3 공격형 (AttackMonster)
@@ -486,6 +500,7 @@ stateDiagram-v2
     Chase --> Return : 거리 미감지
     Attack --> Chase : 재추적 / 공격 범위 이탈
     Return --> Idle : 경계 전환
+    Return --> Idle : 도착
 ```
 
 공통 흐름은 `대기 → (거리 감지) 경계 → (시야 포착) 행동 → (놓침) 경계/복귀`입니다. 종류별 차이는 "행동" 칸에 무엇을 넣느냐뿐이라, 새 몬스터는 규칙의 목표 상태만 바꿔 만들 수 있습니다.
@@ -681,6 +696,5 @@ Odin의 `TabGroup`, `LabelText`로 기획자가 읽기 쉬운 한글 라벨과 �
 |---|---|---|
 | 시야 차폐 | 반경·각도만 판정 (`_obstacleMask`는 선언만 됨) | Raycast로 벽 뒤 대상 제외 |
 | 경로 그리드 | 모든 칸을 통과 가능으로 초기화 | 타일맵·콜라이더 기반으로 walkable 베이크 |
-| 복귀 도착 처리 | 도착 판정 조건(`ReturnDistanceCondition`)은 있지만 규칙에 연결되지 않아, 도착 후 플레이어를 다시 감지할 때까지 복귀 상태를 유지 | 도착 시 대기 상태로 넘어가는 규칙 추가 |
 | 중재자 이벤트 | 문자열 이벤트명 (`"OnStabilized"`) | enum 또는 타입 기반 이벤트로 오타 방지 |
 | 상태이상 | 로직만 완성, 프리팹 미연결, 속박 이벤트는 중재자에서 미처리 | 프리팹 연결, 속박 시 이동 제한 처리 |

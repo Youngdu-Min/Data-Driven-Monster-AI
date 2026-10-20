@@ -13,7 +13,7 @@ public class ReturnState : MovableState
 
     public override void Move()
     {
-        _direction = (transform.position - _returnPos).normalized;
+        _direction = (_returnPos - transform.position).normalized;
 
         // 경로 결정
         Point start = GetGridPoint(transform.position);

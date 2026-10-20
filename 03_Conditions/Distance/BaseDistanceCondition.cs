@@ -7,6 +7,7 @@ public abstract class BaseDistanceCondition : BehaviorStateCondition
     [SerializeField] private bool _exitIfNear = true; // 가까워지면 종료할지, 멀어지면 종료할지
 
     public float DistanceRadius => _distanceRadius;
+    protected bool ExitIfNear => _exitIfNear;
 
     protected void SetupConfig<T>(FsmData fsmData, Func<T, float> valueSelector) where T : ScriptableObject
     {
