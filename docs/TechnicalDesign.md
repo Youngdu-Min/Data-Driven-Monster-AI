@@ -47,9 +47,9 @@ NormalMonster                  MonsterFsm · StabilizeHandler · MonsterMediator
 
 - `WeaponHolder`는 `DirectionalAimer`가 회전시키는 피벗입니다. 시야 조건을 이 오브젝트에 두어, 시야 방향(`transform.right`)이 몬스터가 바라보는 방향을 그대로 따라갑니다.
 
-> 📷 **[S01]** NormalMonster 프리팹 Hierarchy (States / Conditions / WeaponHolder 펼친 상태)
->
-> ![S01](images/S01_prefab_hierarchy.png)
+![NormalMonster 프리팹 Hierarchy — 역할별 자식 오브젝트](images/S01_prefab_hierarchy.png)
+
+*NormalMonster 프리팹 Hierarchy — 역할별 자식 오브젝트*
 
 ### 2.2 클래스 관계
 
@@ -234,9 +234,9 @@ Odin `ListDrawerSettings(ListElementLabelName = "@GetRuleLabel()")`로 각 규�
 
 조건 클래스가 `GetConditionExtraInfo()`로 모드나 수치를 덧붙이므로, 규칙을 펼치지 않고도 흐름을 읽을 수 있습니다. 같은 문자열이 전이 로그의 사유로도 출력됩니다.
 
-> 📷 **[S02]** AttackMonster의 ChaseState 인스펙터 — Transition Rules 3개(시야 미감지 / 거리 미감지 / 공격 시작)가 보이는 상태
->
-> ![S02](images/S02_transition_rules.png)
+![AttackMonster의 ChaseState — 규칙 라벨만으로 전이 흐름을 읽을 수 있는 Transition Rules](images/S02_transition_rules.png)
+
+*AttackMonster의 ChaseState — 규칙 라벨만으로 전이 흐름을 읽을 수 있는 Transition Rules*
 
 ---
 
@@ -342,9 +342,9 @@ public override bool IsConditionMet(Transform owner, FsmData fsmData, float stat
 
 거리 조건은 원(진입 = 빨강 / 이탈 = 파랑), 시야 조건은 부채꼴과 `시야 75° / 10m` 라벨을 Scene 뷰에 그립니다.
 
-> 📷 **[S03]** Scene 뷰 — 몬스터 선택 시 시야 부채꼴 + 거리 원 기즈모 (라벨 보이게)
->
-> ![S03](images/S03_gizmos.png)
+![시야 부채꼴(75° / 10m)과 거리 원(진입 감지) 기즈모](images/S03_gizmos.png)
+
+*시야 부채꼴(75° / 10m)과 거리 원(진입 감지) 기즈모*
 
 ---
 
@@ -426,9 +426,9 @@ protected override float GetMoveSpeed(Vector3 moveDir)
 - 추적·도주는 반응성이 중요하므로 감속을 적용하지 않고, 배회에만 적용했습니다.
 - 배회 상태에 들어올 때 이전 방향 기록을 초기화해, 다른 상태에서 넘어온 직후 엉뚱한 감속이 생기지 않게 했습니다.
 
-> 📷 **[S04]** WanderState 인스펙터 — Wander Settings + Turn Slowdown Settings
->
-> ![S04](images/S04_wander_settings.png)
+![WanderState — 배회 설정과 방향 전환 감속 설정](images/S04_wander_settings.png)
+
+*WanderState — 배회 설정과 방향 전환 감속 설정*
 
 ### 6.3 `AttackState`: 공격 루프
 
@@ -504,10 +504,6 @@ stateDiagram-v2
 ```
 
 공통 흐름은 `대기 → (거리 감지) 경계 → (시야 포착) 행동 → (놓침) 경계/복귀`입니다. 종류별 차이는 "행동" 칸에 무엇을 넣느냐뿐이라, 새 몬스터는 규칙의 목표 상태만 바꿔 만들 수 있습니다.
-
-> 📷 **[S05]** DebuggingMonsterScene Game 뷰 — 세 종류 몬스터와 플레이어가 함께 보이는 화면
->
-> ![S05](images/S05_debug_scene.png)
 
 ---
 
@@ -591,9 +587,9 @@ sequenceDiagram
 - 수면도 같은 이벤트 창구(`OnSleepEntered / OnSleepExited`)로 FSM을 정지·재개하도록 중재자에 처리를 넣어 두었습니다. 새 시스템은 중재자에 이벤트만 추가하면 FSM 코드를 건드리지 않고 연결됩니다.
 - 조건과 공격 루프는 `FsmData.Mediator.IsStabilized`를 확인해, 무력화 중에는 타이머를 초기화하거나 공격을 취소합니다.
 
-> 📷 **[S06]** 플레이 중 StabilizeHandler 인스펙터 — 스택 수치와 `IsStabilized = true`인 순간
->
-> ![S06](images/S06_stabilize_runtime.png)
+![스택이 최대치에 도달해 무력화된 순간의 StabilizeHandler](images/S06_stabilize_runtime.png)
+
+*스택이 최대치에 도달해 무력화된 순간의 StabilizeHandler*
 
 ---
 
@@ -660,13 +656,17 @@ public T GetConfig<T>() where T : ScriptableObject
 
 Odin의 `TabGroup`, `LabelText`로 기획자가 읽기 쉬운 한글 라벨과 탭 구분을 붙였습니다.
 
-> 📷 **[S07]** MonsterFsm 인스펙터 — State Configs 배열에 SO들이 연결된 모습
->
-> ![S07](images/S07_fsm_configs.png)
->
-> 📷 **[S08]** DetectionConfigSO 인스펙터 — 감지 / 상태 탭
->
-> ![S08](images/S08_detection_config.png)
+![MonsterFsm — 몬스터별로 SO를 조합하는 State Configs](images/S07_fsm_configs.png)
+
+*MonsterFsm — 몬스터별로 SO를 조합하는 State Configs*
+
+![DetectionConfigSO — 감지 탭](images/S08_detection_config-1.png)
+
+*DetectionConfigSO — 감지 탭*
+
+![DetectionConfigSO — 상태 탭](images/S08_detection_config-2.png)
+
+*DetectionConfigSO — 상태 탭*
 
 ---
 
@@ -675,18 +675,18 @@ Odin의 `TabGroup`, `LabelText`로 기획자가 읽기 쉬운 한글 라벨과 �
 | 도구 | 내용 |
 |---|---|
 | 상태 모니터링 | `MonsterFsm` 인스펙터에 현재 상태명, 전이 차단·정지·대기 플래그를 실시간 표시. 플레이 중 인스펙터를 강제로 다시 그림 |
-| 전이 로그 | `[FSM Transition]` 사유(규칙 라벨), `[FSM Delay]` 대기 시간 출력. 몬스터별로 끌 수 있음 |
+| 전이 로그 | 지연 전이는 `[FSM Delay]`에 대기 시간과 사유(규칙 라벨), 즉시 전이는 `[FSM Transition]`, 시스템 상태 전이는 `[FSM System]`으로 출력. 몬스터별로 끌 수 있음 |
 | 기즈모 | 시야 부채꼴, 거리 원, 모드 라벨 |
 | 컨텍스트 메뉴 | `StabilizeHandler`의 `AddStack`을 인스펙터 메뉴로 직접 호출 |
 | 전용 씬 | `DebuggingMonsterScene`: 플레이어·투사체 풀·수면 영역 관리자·몬스터만 초기화해 AI만 따로 검증. 사운드는 `NullSoundService`로 대체 |
 
-> 📷 **[S09]** 플레이 중 MonsterFsm 인스펙터 — FSM Monitoring의 현재 상태명이 표시된 모습
->
-> ![S09](images/S09_fsm_monitoring.png)
->
-> 📷 **[S10]** Console — `[FSM Transition]` / `[FSM Delay]` 로그가 연속으로 찍힌 모습
->
-> ![S10](images/S10_transition_log.png)
+![플레이 중 FSM Monitoring — 현재 상태(WanderState)와 무력화로 인한 시스템 정지 플래그](images/S09_fsm_monitoring.png)
+
+*플레이 중 FSM Monitoring — 현재 상태(WanderState)와 무력화로 인한 시스템 정지 플래그*
+
+![Console 전이 로그 — 스폰 → 대기 → 경계 → 추적 → 공격까지 규칙 라벨이 사유로 출력됨](images/S10_transition_log.png)
+
+*Console 전이 로그 — 스폰 → 대기 → 경계 → 추적 → 공격까지 규칙 라벨이 사유로 출력됨*
 
 ---
 
