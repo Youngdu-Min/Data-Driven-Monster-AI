@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace SO.Monster
 {
-    [CreateAssetMenu(fileName = "BaseStabilizationConfig", menuName = "SO/Monster/Stabilization/BaseStabilizationConfig")]
-    public class BaseStabilizationConfigSO : SerializedScriptableObject
+    [CreateAssetMenu(fileName = "BaseStabilizeConfigSO", menuName = "SO/Monster/Stabilize/BaseStabilizeConfigSO")]
+    public class BaseStabilizeConfigSO : SerializedScriptableObject
     {
         [SerializeField] private int _maxStabilizeStack = 10;
         [HideInInspector] public float StackDecayDelay = 3f;

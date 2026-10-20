@@ -7,9 +7,9 @@ using System.Threading;
 using UnityEngine;
 using static MonsterInterface;
 
-public class StabilizationHandler : MonoBehaviour, IGetMediator
+public class StabilizeHandler : MonoBehaviour, IGetMediator
 {
-    [SerializeField] private BaseStabilizationConfigSO _config;
+    [SerializeField] private BaseStabilizeConfigSO _config;
 
     [ShowInInspector, ReadOnly] private int _stabilizeStack = 0;
     [ShowInInspector, ReadOnly] private int MaxStabilizeStack => _config != null ? _config.MaxStabilizeStack : 0;
@@ -65,21 +65,21 @@ public class StabilizationHandler : MonoBehaviour, IGetMediator
 
     private async UniTaskVoid DecayStackAsync(CancellationToken ct)
     {
-        Debug.Log($"[Stabilization] Decay 대기 중... ({_config.StackDecayDelay}s)");
+        Debug.Log($"[Stabilize] Decay 대기 중... ({_config.StackDecayDelay}s)");
         await UniTask.WaitForSeconds(_config.StackDecayDelay, cancellationToken: ct);
 
         while (!ct.IsCancellationRequested)
         {
             SetStabilizeStack(_stabilizeStack - _config.StackDecayAmount);
-            Debug.Log($"[Stabilization] 스택 감소 → {_stabilizeStack} / {_config.MaxStabilizeStack}");
+            Debug.Log($"[Stabilize] 스택 감소 → {_stabilizeStack} / {_config.MaxStabilizeStack}");
             if (_stabilizeStack <= 0)
             {
-                Debug.Log("[Stabilization] 스택 소진");
+                Debug.Log("[Stabilize] 스택 소진");
                 return;
             }
             await UniTask.WaitForSeconds(_config.StackDecayInterval, cancellationToken: ct);
         }
-        Debug.Log("[Stabilization] Decay 취소됨");
+        Debug.Log("[Stabilize] Decay 취소됨");
     }
 
     private async UniTaskVoid StabilizeAsync(CancellationToken ct)
@@ -98,7 +98,7 @@ public class StabilizationHandler : MonoBehaviour, IGetMediator
 
     private void OnStabilizeEnter()
     {
-        CombatStabilizationConfigSO combatConfig = _config as CombatStabilizationConfigSO;
+        CombatStabilizeConfigSO combatConfig = _config as CombatStabilizeConfigSO;
 
         foreach (MonsterInterface.ISetMultiplier multiplier in _multipliers)
         {

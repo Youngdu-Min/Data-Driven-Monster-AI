@@ -101,6 +101,9 @@ public abstract class MovableState : BaseBahaviorState, MonsterInterface.ISetMul
 
     public abstract void Move();
 
+    // 이동 방향에 따라 속도를 보정할 수 있도록 하위 상태에 열어둔 훅
+    protected virtual float GetMoveSpeed(Vector3 moveDir) => CurrentSpeed;
+
     protected Point GetGridPoint(Vector3 worldPos)
     {
         if (_pathManager == null) return new Point(0, 0);
@@ -131,8 +134,10 @@ public abstract class MovableState : BaseBahaviorState, MonsterInterface.ISetMul
             Vector3 targetPos = PathfindingManager.Instance.GridToWorld(point);
             while (Vector3.Distance(CopyFsmData().BaseFsm.transform.position, targetPos) > 0.05f)
             {
+                Vector3 currentPos = CopyFsmData().BaseFsm.transform.position;
+                Vector3 moveDir = (targetPos - currentPos).normalized;
                 CopyFsmData().BaseFsm.transform.position = Vector3.MoveTowards(
-                    CopyFsmData().BaseFsm.transform.position, targetPos, CurrentSpeed * Time.deltaTime);
+                    currentPos, targetPos, GetMoveSpeed(moveDir) * Time.deltaTime);
 
                 OnMove?.Invoke();
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
@@ -153,7 +158,7 @@ public abstract class MovableState : BaseBahaviorState, MonsterInterface.ISetMul
         {
             timer += Time.deltaTime;
 
-            CopyFsmData().BaseFsm.transform.position += moveDir * (CurrentSpeed * Time.deltaTime);
+            CopyFsmData().BaseFsm.transform.position += moveDir * (GetMoveSpeed(moveDir) * Time.deltaTime);
 
             OnMove?.Invoke(); // 회전 및 애니메이션 갱신 유지
             await UniTask.Yield(PlayerLoopTiming.Update, ct);

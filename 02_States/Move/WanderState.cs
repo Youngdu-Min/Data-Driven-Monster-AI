@@ -9,10 +9,17 @@ public class WanderState : MovableState
     [SerializeField] private float _maxWaitTime = 2f;        // 목적지 도착 후 최대 대기 시간
     [SerializeField] private int _maxPickAttempts = 10;      // walkable 지점 탐색 최대 시도 횟수
 
+    [Header("Turn Slowdown Settings")]
+    [SerializeField, Range(0f, 1f)] private float _turnMinSpeedRatio = 0.3f; // 180도 방향 전환 시 속도 비율
+    [SerializeField] private float _turnRecoverSpeed = 3f;                    // 감속 후 원래 속도로 복귀하는 러프 속도
+
     private Vector3 _wanderOrigin;   // 배회 중심점 (Enter 시점의 위치로 고정)
     private bool _isMoving = false;
     private float _waitTimer = 0f;
     private bool _isWaiting = false;
+
+    private Vector3 _lastMoveDir;          // 직전 프레임 이동 방향
+    private float _turnSpeedRatio = 1f;    // 방향 전환 감속 비율 (1 = 감속 없음)
 
     protected override void Fsm_Step_Enter()
     {
@@ -21,6 +28,8 @@ public class WanderState : MovableState
         _isMoving = false;
         _isWaiting = false;
         _waitTimer = 0f;
+        _lastMoveDir = Vector3.zero;
+        _turnSpeedRatio = 1f;
 
         // 진입 즉시 첫 목적지로 이동 시작
         Move();
@@ -71,6 +80,21 @@ public class WanderState : MovableState
 
         _isMoving = true;
         StartMovingWithCallback();
+    }
+
+    // 방향이 꺾인 각도만큼 감속한 뒤 러프로 원래 속도까지 복귀
+    protected override float GetMoveSpeed(Vector3 moveDir)
+    {
+        if (_lastMoveDir != Vector3.zero && moveDir != Vector3.zero)
+        {
+            float angle = Vector3.Angle(_lastMoveDir, moveDir);
+            float targetRatio = Mathf.Lerp(1f, _turnMinSpeedRatio, angle / 180f);
+            _turnSpeedRatio = Mathf.Min(_turnSpeedRatio, targetRatio);
+        }
+        _lastMoveDir = moveDir;
+
+        _turnSpeedRatio = Mathf.Lerp(_turnSpeedRatio, 1f, _turnRecoverSpeed * Time.deltaTime);
+        return base.GetMoveSpeed(moveDir) * _turnSpeedRatio;
     }
 
     // 배회 반경 내에서 walkable한 랜덤 지점을 반환 (없으면 null)
