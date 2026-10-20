@@ -139,7 +139,7 @@ public abstract class BaseFsm : MonoBehaviour, IUpdateObserver, MonsterInterface
 
     public void TransitionToStateNonDelay(BaseBahaviorState baseState, string ruleLabel = "")
     {
-        if (baseState == null || _blockTransition || _isSystemPaused || baseState is ReturnState) { return; }
+        if (baseState == null || _blockTransition || _isSystemPaused) { return; }
 
         if (_showStateTransitionLog)
         {
@@ -157,8 +157,9 @@ public abstract class BaseFsm : MonoBehaviour, IUpdateObserver, MonsterInterface
 
     public async UniTaskVoid TransitionToState(BaseBahaviorState baseState, string ruleLabel = "")
     {
+        // 안정화 중 복귀 금지는 _isSystemPaused(중재자가 설정)가 모든 전이를 막는 것으로 대체
         if (baseState == null || _blockTransition || _isSystemPaused || _isWaitingTransition ||
-            ActiveState == baseState || baseState is ReturnState) { return; }
+            ActiveState == baseState) { return; }
 
         _isWaitingTransition = true;
 
