@@ -8,6 +8,12 @@
 - **기간**: 2026.03 ~ 2026.04
 - 이 저장소는 팀 프로젝트 중 **본인이 담당한 몬스터 AI 코드**만 발췌했습니다.
 
+## 시연 영상
+
+[![ProjectFS Monster AI 시연 영상](https://img.youtube.com/vi/VQ4SnIiiFDk/hqdefault.jpg)](https://www.youtube.com/watch?v=VQ4SnIiiFDk)
+
+몬스터 3종(배회·공격·도주)이 플레이어를 감지하고 행동한 뒤 복귀하는 흐름입니다. Scene 뷰에서 시야·감지 범위 기즈모를 켠 상태로 녹화했습니다.
+
 ## 구현 범위
 
 - **모듈형 FSM 프레임워크**: 상태를 컴포넌트 단위로 붙이고 떼는 방식으로 몬스터 AI를 구성
