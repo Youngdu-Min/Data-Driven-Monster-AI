@@ -1,4 +1,4 @@
-# ProjectFS Monster AI — 기술 문서
+# Data-Driven Monster AI — 기술 문서
 
 [← README로 돌아가기](../README.md)
 

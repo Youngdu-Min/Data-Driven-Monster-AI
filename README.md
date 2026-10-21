@@ -1,16 +1,16 @@
-# ProjectFS — Monster AI
+# Data-Driven Monster AI
 
 ## 프로젝트 소개
 
-- **ProjectFS**: 외계 행성을 탐사하며 생물을 죽이지 않고 제압해 자원을 얻는 2D 탑다운 게임 (초기 기획)
-- **개발**: 5인 팀 (기획 1 · 프로그래밍 2 · 아트 2) / 프로그래머로 참여
+- **게임**: 외계 행성을 탐사하며 생물을 죽이지 않고 제압해 자원을 얻는 2D 탑다운 게임 (초기 기획)
+- **개발**: 5인 팀 (기획 1 · 프로그래밍 2 · 아트 2) / 프로그래머로 참여 · 팀 프로젝트 코드명 ProjectFS
 - **환경**: Unity 6 (URP), C#, UniTask, Odin Inspector
 - **기간**: 2026.03 ~ 2026.04
 - 이 저장소는 팀 프로젝트 중 **본인이 담당한 몬스터 AI 코드**만 발췌했습니다.
 
 ## 시연 영상
 
-[![ProjectFS Monster AI 시연 영상](https://img.youtube.com/vi/VQ4SnIiiFDk/hqdefault.jpg)](https://www.youtube.com/watch?v=VQ4SnIiiFDk)
+[![Monster AI 시연 영상](https://img.youtube.com/vi/VQ4SnIiiFDk/hqdefault.jpg)](https://www.youtube.com/watch?v=VQ4SnIiiFDk)
 
 몬스터 3종(배회·공격·도주)이 플레이어를 감지하고 행동한 뒤 복귀하는 흐름입니다. Scene 뷰에서 시야·감지 범위 기즈모를 켠 상태로 녹화했습니다.
 
