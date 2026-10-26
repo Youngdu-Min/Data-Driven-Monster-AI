@@ -365,11 +365,12 @@ public override bool IsConditionMet(Transform owner, FsmData fsmData, float stat
 
 ```mermaid
 flowchart LR
-    A[Enter] --> B[Move: 목적지 결정 + FindPath]
+    A[Enter] -- WanderState --> B[Move: 목적지 결정 + FindPath]
+    A -- Chase · Escape · Return --> F
     B --> C{경로 있음?}
     C -- 예 --> D[waypoint마다 MoveTowards]
     C -- 아니오 --> E[직선 이동 0.5초]
-    D --> F[0.5초마다 경로 재계산]
+    D --> F[0.5초마다 경로 재계산<br/>Target 없으면 건너뜀]
     F --> B
 ```
 
